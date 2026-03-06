@@ -11,7 +11,7 @@ console.log("THIS IS THE ACTIVE SERVER FILE");
 
 //root endpoint
 app.get('/', (req, res) => {
-    res.status(200).json({ message: "API running"});
+    res.status(200).json({ message: "API is running"});
 });
 
 //players endpoint
@@ -25,9 +25,29 @@ app.get('/players', (req, res) => {
 //POST a new player
 app.post('/players', (req, res) => {
     console.log("POST /players HIT");
-    res.status(201).json ({
-        message: "POST works",
-        body: req.body
+
+    const { name, position } = req.body;
+    
+    if (!name || !position) {
+        return res.status(400).json({
+            error: "Bad Request",
+            message: "Both 'name' and 'position' are required."
+        });
+    }
+
+//simulate creating a new player
+const newPlayer = {
+    id: Date.now(),
+    name,
+    position
+};
+return res.status(201).json(newPlayer);
+});
+
+app.use((req,res) => {
+    res.status(404).json({
+        error: "Not Found",
+        message: "The requested endpoint does not exist."
     });
 });
 //start server
